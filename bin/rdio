@@ -2,6 +2,7 @@
 
 # Imports
 import os, re, threading, sys, getopt, time
+import fcntl, termios, struct
 from subprocess import check_output
 from subprocess import call
 from subprocess import Popen, PIPE
@@ -10,26 +11,64 @@ from subprocess import Popen, PIPE
 class Rdio:
 	def __init__(self, delay):
 		self.delay = delay
+		self.terminal_size()
 
 		while(True):
 			self.nowPlaying()
 			time.sleep(self.delay)
 
-	def nowPlaying(self):
-		os.system('clear')
-		call(["figlet", "NOW PLAYING"])
+	def terminal_size(self):
+		h, w, hp, wp = struct.unpack('HHHH',
+			fcntl.ioctl(0, termios.TIOCGWINSZ,
+			struct.pack('HHHH', 0, 0, 0, 0)))
+
+		self.width = w
+		self.height = h
+	
+	def printCenter(self, txt):
+		print(str.center(txt, self.width).rstrip())
+
+	def getArtist(self):
 		scpt = '''
 		tell application "Rdio"
 			if player state is playing then
-				set trackName to (get name of current track)
 				set artistName to (get artist of current track)
-				return (artistName & " - " & trackName) as text
+				return (artistName) as text
 			end if
 		end tell'''
 
 		p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 		stdout, stderr = p.communicate(scpt)
-		print(str.center(stdout, 58))
+
+		return stdout
+
+	def getSong(self):
+		scpt = '''
+		tell application "Rdio"
+			if player state is playing then
+				set trackName to (get name of current track)
+				return (trackName) as text
+			end if
+		end tell'''
+		
+		p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+		stdout, stderr = p.communicate(scpt)
+
+		return stdout
+
+	def centerRows(self, rows):
+		margin = (self.height / 2) - (rows / 2)
+
+		for x in range (0, margin):
+			print("")
+
+	def nowPlaying(self):
+		os.system('clear')
+		self.centerRows(4)
+		self.printCenter("NOW PLAYING ON RDIO")
+		self.printCenter("--------------------")
+		self.printCenter(self.getArtist())
+		self.printCenter(self.getSong())
 
 # The main class to handle threads, and inputs
 class Main:
