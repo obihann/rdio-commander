@@ -28,6 +28,18 @@ class Rdio:
 	def printCenter(self, txt):
 		print(str.center(txt, self.width).rstrip())
 
+	def getStatus(self):
+		scpt = '''
+		tell application "Rdio"
+			set playStatus to (get player state)
+			return (playStatus) as text
+		end tell'''
+
+		p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+		stdout, stderr = p.communicate(scpt)
+
+		return stdout
+
 	def getArtist(self):
 		scpt = '''
 		tell application "Rdio"
@@ -65,10 +77,24 @@ class Rdio:
 	def nowPlaying(self):
 		os.system('clear')
 		self.centerRows(4)
-		self.printCenter("NOW PLAYING ON RDIO")
+		status = str(self.getStatus())
+
+		if "play" in status:
+			self.printCenter("NOW PLAYING ON RDIO")
+			self.song = self.getSong()
+			self.artist = self.getArtist()
+		elif "pause" in status:
+			self.printCenter("PAUSED ON RDIO")
+		else:
+			self.printCenter("PLAYING NOTHING ON RDIO")
+		
 		self.printCenter("--------------------")
-		self.printCenter(self.getArtist())
-		self.printCenter(self.getSong())
+
+		if self.artist and self.song:
+			self.printCenter(self.artist)
+			self.printCenter(self.song)
+		else:
+			self.printCenter("Why not find some punk?")
 
 # The main class to handle threads, and inputs
 class Main:
