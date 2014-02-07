@@ -1,0 +1,67 @@
+#!/usr/bin/python
+
+# Imports
+import os, re, threading, sys, getopt, time
+from subprocess import check_output
+from subprocess import call
+from subprocess import Popen, PIPE
+
+# The brains
+class Rdio:
+	def __init__(self, delay):
+		self.delay = delay
+
+		while(True):
+			self.nowPlaying()
+			time.sleep(self.delay)
+
+	def nowPlaying(self):
+		os.system('clear')
+		call(["figlet", "NOW PLAYING"])
+		scpt = '''
+		tell application "Rdio"
+			if player state is playing then
+				set trackName to (get name of current track)
+				set artistName to (get artist of current track)
+				return (artistName & " - " & trackName) as text
+			end if
+		end tell'''
+
+		p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+		stdout, stderr = p.communicate(scpt)
+		print(str.center(stdout, 58))
+
+# The main class to handle threads, and inputs
+class Main:
+	# Setup some default varialbes
+	delay = 30.0
+
+	def __init__(self, argv):
+		# Check for command line arguments
+		try:
+			opts, args = getopt.getopt(argv,"hd:",["help", "delay="])
+		except getopt.GetoptError:
+			print 'rdio.py -d <delay>'
+			sys.exit(2)
+
+		for opt, arg in opts:
+			if opt == '-h':
+				print 'Rdio.py -d <delay>'
+				sys.exit()
+			elif opt in ("-d", "--delay"):
+				self.delay = float(arg)
+
+		rdioThread = threading.Thread(target = self.startThreads)
+		rdioThread.daemon = True
+		rdioThread.start()
+
+		try:
+			time.sleep(1000)
+		except KeyboardInterrupt:
+			print '\nGoodbye!'
+
+	def startThreads(self):
+		Rdio(self.delay)
+
+if __name__ == "__main__":
+	main = Main(sys.argv[1:])
