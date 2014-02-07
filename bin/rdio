@@ -76,6 +76,8 @@ class Main:
 	delay = 30.0
 
 	def __init__(self, argv):
+		self.isRunning = True
+
 		# Check for command line arguments
 		try:
 			opts, args = getopt.getopt(argv,"hd:",["help", "delay="])
@@ -100,7 +102,8 @@ class Main:
 			print '\nGoodbye!'
 
 	def startThreads(self):
-		Rdio(self.delay)
+		while self.isRunning == True:
+			Rdio(self.delay)
 
 if __name__ == "__main__":
 	main = Main(sys.argv[1:])
