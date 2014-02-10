@@ -102,8 +102,6 @@ class Main:
 	delay = 30.0
 
 	def __init__(self, argv):
-		self.isRunning = True
-
 		# Check for command line arguments
 		try:
 			opts, args = getopt.getopt(argv,"hd:",["help", "delay="])
@@ -118,18 +116,10 @@ class Main:
 			elif opt in ("-d", "--delay"):
 				self.delay = float(arg)
 
-		rdioThread = threading.Thread(target = self.startThreads)
-		rdioThread.daemon = True
-		rdioThread.start()
-
 		try:
-			time.sleep(1000)
+			self.rdio = Rdio(self.delay)
 		except KeyboardInterrupt:
-			print '\nGoodbye!'
-
-	def startThreads(self):
-		while self.isRunning == True:
-			Rdio(self.delay)
+			sys.exit()
 
 if __name__ == "__main__":
 	main = Main(sys.argv[1:])
