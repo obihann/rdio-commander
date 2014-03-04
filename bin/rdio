@@ -2,6 +2,7 @@
 
 # Imports
 import os, re, threading, sys, getopt, time
+import urwid
 import fcntl, termios, struct
 from subprocess import check_output
 from subprocess import call
@@ -10,23 +11,9 @@ from subprocess import Popen, PIPE
 # The brains
 class Rdio:
 	def __init__(self, delay):
-		self.delay = delay
-		self.terminal_size()
-
 		while(True):
 			self.nowPlaying()
 			time.sleep(self.delay)
-
-	def terminal_size(self):
-		h, w, hp, wp = struct.unpack('HHHH',
-			fcntl.ioctl(0, termios.TIOCGWINSZ,
-			struct.pack('HHHH', 0, 0, 0, 0)))
-
-		self.width = w
-		self.height = h
-	
-	def printCenter(self, txt):
-		print(str.center(txt, self.width).rstrip())
 
 	def getStatus(self):
 		scpt = '''
@@ -68,33 +55,53 @@ class Rdio:
 
 		return stdout
 
-	def centerRows(self, rows):
-		margin = (self.height / 2) - (rows / 2)
-
-		for x in range (0, margin):
-			print("")
-
 	def nowPlaying(self):
-		os.system('clear')
-		self.centerRows(4)
 		status = str(self.getStatus())
 
+		palette = [
+			('banner', 'black', 'light gray'),
+			('streak', 'black', 'dark red'),
+			('bg', 'black', 'dark blue'),]
+
+		placeholder = urwid.SolidFill()
+		loop = urwid.MainLoop(placeholder, palette)
+		loop.widget = urwid.AttrMap(placeholder, 'bg')
+		loop.widget.original_widget = urwid.Filler(urwid.Pile([]), "top")
+
+		pile = loop.widget.base_widget
+		widgets = []
+
+		title = urwid.Text(u"RDIO COMMANDER", align='center')
+		titleMap = urwid.AttrMap(title, 'banner')
+		pile.contents.append((titleMap, pile.options()))
+
 		if "play" in status:
-			self.printCenter("NOW PLAYING ON RDIO")
 			self.song = self.getSong()
 			self.artist = self.getArtist()
+			
+			title = urwid.Text(u"NOW PLAYING ON RDIO", align='center')
+			titleMap = urwid.AttrMap(title, 'streak')
+
+			pile.contents.append((titleMap, pile.options()))
 		elif "pause" in status:
-			self.printCenter("PAUSED ON RDIO")
+			txt = urwid.Text(u"PAUSED ON RDIO", align='center')
+			pile.contents.append((txt, pile.options()))
 		else:
-			self.printCenter("PLAYING NOTHING ON RDIO")
-		
-		self.printCenter("--------------------")
+			txt = urwid.Text(u"PLAYING NOTHING ON RDIO", align='center')
+			pile.contents.append((txt, pile.options()))
+
+		spacer = urwid.Text(u"")
+		pile.contents.append((spacer, pile.options()))
 
 		if self.artist and self.song:
-			self.printCenter(self.artist)
-			self.printCenter(self.song)
+			txt = self.artist + self.song
+			details = urwid.Text(txt, align='center')
+			pile.contents.append((details, pile.options()))
 		else:
-			self.printCenter("Why not find some punk?")
+			txt = urwid.Text(u"Why not find some punk?", align='center')
+			pile.contents.append((txt, pile.options()))
+
+		loop.run()
 
 # The main class to handle threads, and inputs
 class Main:
