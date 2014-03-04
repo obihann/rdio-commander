@@ -60,7 +60,8 @@ class Rdio:
 
 		palette = [
 			('banner', 'black', 'light gray'),
-			('streak', 'black', 'dark red'),
+			('paused', 'black', 'dark red'),
+			('playing', 'black', 'dark green'),
 			('bg', 'black', 'dark blue'),]
 
 		placeholder = urwid.SolidFill()
@@ -73,33 +74,34 @@ class Rdio:
 
 		title = urwid.Text(u"RDIO COMMANDER", align='center')
 		titleMap = urwid.AttrMap(title, 'banner')
-		pile.contents.append((titleMap, pile.options()))
+		pile.contents.append((titleMap, pile.options('pack')))
 
 		if "play" in status:
 			self.song = self.getSong()
 			self.artist = self.getArtist()
 			
 			title = urwid.Text(u"NOW PLAYING ON RDIO", align='center')
-			titleMap = urwid.AttrMap(title, 'streak')
+			titlemap = urwid.AttrMap(title, 'playing')
 
-			pile.contents.append((titleMap, pile.options()))
+			pile.contents.append((titlemap, pile.options('pack')))
 		elif "pause" in status:
 			txt = urwid.Text(u"PAUSED ON RDIO", align='center')
-			pile.contents.append((txt, pile.options()))
+			titlemap = urwid.AttrMap(title, 'paused')
+
+			pile.contents.append((titlemap, pile.options('pack')))
 		else:
 			txt = urwid.Text(u"PLAYING NOTHING ON RDIO", align='center')
-			pile.contents.append((txt, pile.options()))
+			pile.contents.append((txt, pile.options('pack')))
 
-		spacer = urwid.Text(u"")
-		pile.contents.append((spacer, pile.options()))
+		#pile.contents.append((urwid.SolidFill(), pile.options()))
 
 		if self.artist and self.song:
 			txt = self.artist + self.song
 			details = urwid.Text(txt, align='center')
-			pile.contents.append((details, pile.options()))
+			pile.contents.append((details, pile.options('pack')))
 		else:
 			txt = urwid.Text(u"Why not find some punk?", align='center')
-			pile.contents.append((txt, pile.options()))
+			pile.contents.append((txt, pile.options('pack')))
 
 		loop.run()
 
