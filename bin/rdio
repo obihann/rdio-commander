@@ -44,11 +44,10 @@ class Rdio:
 		# add status message
 		pile.contents.append((self.statusMap, pile.options('pack')))
 
-		self.loop.run()
+                self.loop.set_alarm_in(delay, self.nowPlaying)
 
-                while(True):
-                        self.nowPlaying()
-                        time.sleep(self.delay)
+                self.nowPlaying(self.loop)
+		self.loop.run()
 
 	def getStatus(self):
 		scpt = '''
@@ -90,24 +89,24 @@ class Rdio:
 
 		return stdout
 
-	def nowPlaying(self):
+	def nowPlaying(self, loop, user_data = None):
 		status = str(self.getStatus())
 		
 		if "play" in status:
 			self.song = self.getSong()
 			self.artist = self.getArtist()
+
                         self.status.set_text(u"NOW PLAYING ON RDIO")
-                        #self.status = urwid.Text(u"NOW PLAYING ON RDIO", align='center')
-                        #self.statusMap = urwid.AttrMap(self.status, 'playing')
-		#elif "pause" in status:
-			#self.status = urwid.Text(u"PAUSED ON RDIO", align='center')
-			#self.statusMap = urwid.AttrMap(self.status, 'paused')
-		#else:
-			#self.status = urwid.Text(u"PLAYING NOTHING ON RDIO", align='center')
-			#self.statusMap = urwid.AttrMap(self.status, 'paused')
+                        self.statusMap.set_attr_map({None: 'playing'})
+		elif "pause" in status:
+			self.status.set_text(u"PAUSED ON RDIO")
+                        self.statusMap.set_attr_map({None: 'paused'})
+		else:
+			self.status.set_text(u"PLAYING NOTHING ON RDIO")
+                        self.statusMap.set_attr_map({None: 'paused'})
 		
-                #if self.artist and self.song:
-			#details = urwid.Text(self.artist + self.song, align='center')
+                if self.artist and self.song:
+			self.details.set_text(self.artist + self.song)
 
 
 # The main class to handle threads, and inputs
