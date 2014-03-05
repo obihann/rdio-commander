@@ -1,21 +1,29 @@
 #!/usr/bin/python
 
 # Imports
-import os, re, threading, sys, getopt, time
+import sys, getopt
 import urwid
-import fcntl, termios, struct
-from subprocess import check_output
-from subprocess import call
 from subprocess import Popen, PIPE
 
 # The brains
 class Rdio:
-	def __init__(self, delay):
-		self.palette = [
-			('banner', 'black', 'light gray'),
-			('paused', 'black', 'dark red'),
-			('playing', 'black', 'dark green'),
-			('bg', 'black', 'dark blue'),]
+	lightPallet = [
+		('banner', 'black', 'light gray'),
+		('paused', 'black', 'dark red'),
+		('playing', 'black', 'dark green'),
+		('bg', 'black', 'dark blue'),]
+
+	darkPallet = [
+		('banner', 'light gray', 'black'),
+		('paused', 'dark red', 'light gray'),
+		('playing', 'dark green', 'light gray'),
+		('bg', 'dark blue', 'dark gray'),]
+
+	def __init__(self, delay, color):
+		if color == 1:
+			self.palette = self.lightPallet
+		else:
+			self.palette = self.darkPallet
 
 		placeholder = urwid.SolidFill()
 		self.loop = urwid.MainLoop(placeholder, self.palette)
@@ -32,8 +40,8 @@ class Rdio:
 		pile.contents.append((urwid.SolidFill(), pile.options()))
 		
 		# create status message
-                self.status = urwid.Text(u"PLAYING NOTHING ON RDIO", align='center')
-                self.statusMap = urwid.AttrMap(self.status, 'paused')
+		self.status = urwid.Text(u"PLAYING NOTHING ON RDIO", align='center')
+		self.statusMap = urwid.AttrMap(self.status, 'paused')
 		
 		# create and add song / atrist to the screen
 		self.details = urwid.Text(u"Why not find some punk?", align='center')
@@ -44,9 +52,9 @@ class Rdio:
 		# add status message
 		pile.contents.append((self.statusMap, pile.options('pack')))
 
-                self.loop.set_alarm_in(delay, self.nowPlaying)
+		self.loop.set_alarm_in(delay, self.nowPlaying)
 
-                self.nowPlaying(self.loop)
+		self.nowPlaying(self.loop)
 		self.loop.run()
 
 	def getStatus(self):
@@ -96,16 +104,16 @@ class Rdio:
 			self.song = self.getSong()
 			self.artist = self.getArtist()
 
-                        self.status.set_text(u"NOW PLAYING ON RDIO")
-                        self.statusMap.set_attr_map({None: 'playing'})
+			self.status.set_text(u"NOW PLAYING ON RDIO")
+			self.statusMap.set_attr_map({None: 'playing'})
 		elif "pause" in status:
 			self.status.set_text(u"PAUSED ON RDIO")
-                        self.statusMap.set_attr_map({None: 'paused'})
+			self.statusMap.set_attr_map({None: 'paused'})
 		else:
 			self.status.set_text(u"PLAYING NOTHING ON RDIO")
-                        self.statusMap.set_attr_map({None: 'paused'})
-		
-                if hasattr(self, 'artist') and hasattr(self, 'song'):
+			self.statusMap.set_attr_map({None: 'paused'})
+
+		if hasattr(self, 'artist') and hasattr(self, 'song'):
 			self.details.set_text(self.artist + self.song)
 
 
@@ -113,24 +121,32 @@ class Rdio:
 class Main:
 	# Setup some default varialbes
 	delay = 5.0
+	color = 2
 
 	def __init__(self, argv):
 		# Check for command line arguments
 		try:
-			opts, args = getopt.getopt(argv,"hd:",["help", "delay="])
+			opts, args = getopt.getopt(argv,"hdc:",["help", "delay=", 'color='])
 		except getopt.GetoptError:
 			print 'rdio.py -d <delay>'
 			sys.exit(2)
 
 		for opt, arg in opts:
 			if opt == '-h':
+				print 'RDIO COMMANDER 0.1'
 				print 'Rdio.py -d <delay>'
+				print 'Rdio.py -c <light | dark>'
 				sys.exit()
+			if opt == '-c':
+				if (str(arg) == 'light'):
+					self.color = 1
+				else:
+					self.color = 2
 			elif opt in ("-d", "--delay"):
 				self.delay = float(arg)
 
 		try:
-			self.rdio = Rdio(self.delay)
+			self.rdio = Rdio(self.delay, self.color)
 		except KeyboardInterrupt:
 			sys.exit()
 
