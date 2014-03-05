@@ -120,7 +120,7 @@ class Rdio:
 # The main class to handle threads, and inputs
 class Main:
 	# Setup some default varialbes
-	delay = 5.0
+	delay = 15.0
 	color = 2
 
 	def __init__(self, argv):
