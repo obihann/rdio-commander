@@ -1,4 +1,4 @@
-#RdioCommander 0.1
+#RdioCommander 1.0
 A tool for monitoring the Rdio desktop application. Built in Python, and using OSASCRIPT to handle interaction with Rdio.
 
 ##Setup
