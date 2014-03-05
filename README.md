@@ -1,22 +1,20 @@
-RdioCommander
-=============
+#RdioCommander 0.1
+A tool for monitoring the Rdio desktop application. Built in Python, and using OSASCRIPT to handle interaction with Rdio.
 
-A Python and AppleScript tool for monitoring the OSX Rdio application.
+##Setup
+> $ python setup.py install
 
+##Usage
+    $ rdio -h
+    RDIO COMMANDER 0.1
+    Rdio.py -d <delay>
+    Rdio.py -c <light | dark>
 
-                                                 NOW PLAYING ON RDIO
-                                                 --------------------
-                                                   Authority Zero
-                                                   One More Minute
-                                                   
-                                              
-##Instructions
-> python bin/rdio
-
-By default this refreshes every 10 seconds, to customize that try the following
-
-
-> python bin/rdio -d 5
+##Examples
+###Light
+![alt tag](https://raw.github.com/obihann/RdioCommander/master/screenshots/light.png)
+###Dark
+![alt tag](https://raw.github.com/obihann/RdioCommander/master/screenshots/dark.png)
 
 ##License
 This tool is protected by the [GNU General Public License v2](http://www.gnu.org/licenses/gpl-2.0.html).
