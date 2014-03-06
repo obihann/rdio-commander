@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Imports
-import sys, argparse
+import sys, argparse, datetime
 import urwid
 from subprocess import Popen, PIPE
 
@@ -11,23 +11,24 @@ class Rdio:
 			('banner', 'black', 'light gray'),
 			('paused', 'black', 'dark red'),
 			('playing', 'black', 'dark green'),
-			('bg', 'black', 'dark blue'),]
-
+			('bg', 'black', 'dark blue'),
+			('controls', 'black', 'dark blue'),]
 	darkPallet = [
 			('banner', 'light gray', 'black'),
-			('paused', 'dark red', 'light gray'),
-			('playing', 'dark green', 'light gray'),
-			('bg', 'dark blue', 'dark gray'),]
-
+			('paused', 'light gray', 'dark red'),
+			('playing', 'black', 'light gray'),
+			('bg', 'dark blue', 'dark gray'),
+			('controls', 'black', 'dark gray'),]
 	def __init__(self, delay, color):
 		self.delay = delay
+		
 		if color == 1:
 			self.palette = self.lightPallet
 		else:
 			self.palette = self.darkPallet
 
 		placeholder = urwid.SolidFill()
-		self.loop = urwid.MainLoop(placeholder, self.palette)
+		self.loop = urwid.MainLoop(placeholder, self.palette, unhandled_input=self.controls)
 		self.loop.widget = urwid.AttrMap(placeholder, 'bg')
 		self.loop.widget.original_widget = urwid.Pile([])
 
@@ -50,24 +51,44 @@ class Rdio:
 		pile.contents.append((self.details, pile.options('pack')))
 		pile.contents.append((urwid.SolidFill(), pile.options()))
 
+		# controls 
+		self.controls = urwid.Text(u"p - pause | n - next track | l - last track | a - add to collection | r - remove from collection | q - quit\n", align='center')
+		self.controlsMap = urwid.AttrMap(self.controls, 'controls')
+
+		pile.contents.append((self.controlsMap, pile.options('pack')))
+
 		# add status message
 		pile.contents.append((self.statusMap, pile.options('pack')))
 
 		self.nowPlaying(self.loop)
 		self.loop.run()
+	
+	def controls(self, key):
+		if key in ('q', 'Q'):
+			raise urwid.ExitMainLoop()
+		elif key in ('p', 'P'):
+			self.controlRdio('pause')
+		elif key in ('n', 'N'):
+			self.controlRdio('next')
+		elif key in ('l', 'L'):
+			self.controlRdio('previous')
+		elif key in ('a', 'A'):
+			self.controlRdio('add')
+		elif key in ('r', 'R'):
+			self.controlRdio('remove')
 
-	def getRdio(self, req):
+	def controlRdio(self, req):
 		scpt = ""
 
 		if req == 'status':
 			scpt = '''
-			tell application "Rdio"
+			tell application "rdio"
 				set playStatus to (get player state)
 				return (playStatus) as text
 			end tell'''
 		elif req == 'artist':
 			scpt = '''
-			tell application "Rdio"
+			tell application "rdio"
 				if player state is playing then
 					set artistName to (get artist of current track)
 					return (artistName) as text
@@ -75,10 +96,51 @@ class Rdio:
 			end tell'''
 		elif req == 'song':
 			scpt = '''
-			tell application "Rdio"
+			tell application "rdio"
 				if player state is playing then
-					set trackName to (get name of current track)
-					return (trackName) as text
+					set trackname to (get name of current track)
+					return (trackname) as text
+				end if
+			end tell'''
+		elif req == 'pause':
+			scpt = '''
+			tell application "rdio"
+				playpause
+			end tell'''
+		elif req == 'next':
+			scpt = '''
+			tell application "rdio"
+				next track
+			end tell'''
+		elif req == 'previous':
+			scpt = '''
+			tell application "rdio"
+				previous track
+			end tell'''
+		elif req == 'add':
+			scpt = '''
+			tell application "rdio"
+				add to collection
+			end tell'''
+		elif req == 'remove':
+			scpt = '''
+			tell application "rdio"
+				remove from collection
+			end tell'''
+		elif req == 'duration':
+			scpt = '''
+			tell application "rdio"
+				if player state is playing then
+					set dur to (get duration of current track)
+					return (dur) as text
+				end if
+			end tell'''
+		elif req == 'position':
+			scpt = '''
+			tell application "rdio"
+				if player state is playing then
+					set pos to player position
+					return (pos) as text
 				end if
 			end tell'''
 
@@ -91,11 +153,21 @@ class Rdio:
 		return stdout
 
 	def nowPlaying(self, loop, user_data = None):
-		status = str(self.getRdio('status'))
+		status = str(self.controlRdio('status'))
 
 		if "play" in status:
-			self.song = self.getRdio('song')
-			self.artist = self.getRdio('artist')
+			self.song = self.controlRdio('song').rstrip()
+			self.artist = self.controlRdio('artist').rstrip()
+
+			duration = float(self.controlRdio('duration'))
+			position = float(self.controlRdio('position'))
+
+			position = int(duration * position) / 100
+
+			duration = str(datetime.timedelta(seconds = duration))
+			position = str(datetime.timedelta(seconds = position))
+
+			self.duration = position[3:] + " / " + duration[3:]
 
 			self.status.set_text(u"NOW PLAYING ON RDIO")
 			self.statusMap.set_attr_map({None: 'playing'})
@@ -107,7 +179,7 @@ class Rdio:
 			self.statusMap.set_attr_map({None: 'paused'})
 
 		if hasattr(self, 'artist') and hasattr(self, 'song'):
-			self.details.set_text(self.artist + self.song)
+			self.details.set_text(self.artist + " - " + self.song + " \n" + self.duration)
 		else:
 			self.status.set_text(u"PLAYING NOTHING ON RDIO")
 			self.statusMap.set_attr_map({None: 'paused'})
@@ -118,9 +190,9 @@ class Rdio:
 # The main class to handle threads, and inputs
 class Main:
 	# Setup some default varialbes
-	delay = 5
+	delay = 1
 	color = 2
-	version = "1.1.0"
+	version = "1.2.0"
 
 	def __init__(self, argv):
 		print 'RDIO COMMANDER ' + self.version
@@ -136,10 +208,8 @@ class Main:
 		if args.refresh:
 			self.delay = args.refresh
 		if args.color:
-			if str.color == "light":
+			if args.color == "light":
 				self.color = 1
-			else:
-				self.color - 2
 
 		try:
 			self.rdio = Rdio(self.delay, self.color)
