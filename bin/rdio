@@ -56,52 +56,46 @@ class Rdio:
 		self.nowPlaying(self.loop)
 		self.loop.run()
 
-	def getStatus(self):
-		scpt = '''
-		tell application "Rdio"
-			set playStatus to (get player state)
-			return (playStatus) as text
-		end tell'''
+	def getRdio(self, req):
+		scpt = ""
 
-		p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-		stdout, stderr = p.communicate(scpt)
+		if req == 'status':
+			scpt = '''
+			tell application "Rdio"
+				set playStatus to (get player state)
+				return (playStatus) as text
+			end tell'''
+		elif req == 'artist':
+			scpt = '''
+			tell application "Rdio"
+				if player state is playing then
+					set artistName to (get artist of current track)
+					return (artistName) as text
+				end if
+			end tell'''
+		elif req == 'song':
+			scpt = '''
+			tell application "Rdio"
+				if player state is playing then
+					set trackName to (get name of current track)
+					return (trackName) as text
+				end if
+			end tell'''
 
-		return stdout
+		stdout = ""
 
-	def getArtist(self):
-		scpt = '''
-		tell application "Rdio"
-			if player state is playing then
-				set artistName to (get artist of current track)
-				return (artistName) as text
-			end if
-		end tell'''
-
-		p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-		stdout, stderr = p.communicate(scpt)
-
-		return stdout
-
-	def getSong(self):
-		scpt = '''
-		tell application "Rdio"
-			if player state is playing then
-				set trackName to (get name of current track)
-				return (trackName) as text
-			end if
-		end tell'''
-		
-		p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-		stdout, stderr = p.communicate(scpt)
+		if scpt != "":
+			p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+			stdout, stderr = p.communicate(scpt)
 
 		return stdout
 
 	def nowPlaying(self, loop, user_data = None):
-		status = str(self.getStatus())
+		status = str(self.getRdio('status'))
 		
 		if "play" in status:
-			self.song = self.getSong()
-			self.artist = self.getArtist()
+			self.song = self.getRdio('song')
+			self.artist = self.getRdio('artist')
 
 			self.status.set_text(u"NOW PLAYING ON RDIO")
 			self.statusMap.set_attr_map({None: 'playing'})
