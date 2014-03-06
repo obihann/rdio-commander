@@ -3,7 +3,7 @@
 A tool for monitoring the Rdio desktop application. Built in Python, and using OSASCRIPT to handle interaction with Rdio.
 
 - https://github.com/obihann/RdioCommander/archive/1.1.0.tar.gz
-- SHA1: 16a4deb87dd4b5ed7d26a81b3de5ea618f6b81de
+- SHA1: 877b6d67f4e19d218e0cf0de04d7f821becd7bc4
 
 ##Setup
 ``` 
