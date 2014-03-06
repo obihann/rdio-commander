@@ -24,6 +24,12 @@ Rdio.py -c <light | dark>
 ###Dark
 ![alt tag](https://raw.github.com/obihann/RdioCommander/master/screenshots/dark.png)
 
+##Changelog
+- 1.0: Initial release
+- 1.0.1: Bug fixes
+- 1.0.2: Fixing loop
+
+
 ##License
 This tool is protected by the [GNU General Public License v2](http://www.gnu.org/licenses/gpl-2.0.html).
 
