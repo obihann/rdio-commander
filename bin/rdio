@@ -1,23 +1,23 @@
 #!/usr/bin/python
 
 # Imports
-import sys, getopt
+import sys, argparse
 import urwid
 from subprocess import Popen, PIPE
 
 # The brains
 class Rdio:
 	lightPallet = [
-		('banner', 'black', 'light gray'),
-		('paused', 'black', 'dark red'),
-		('playing', 'black', 'dark green'),
-		('bg', 'black', 'dark blue'),]
+			('banner', 'black', 'light gray'),
+			('paused', 'black', 'dark red'),
+			('playing', 'black', 'dark green'),
+			('bg', 'black', 'dark blue'),]
 
 	darkPallet = [
-		('banner', 'light gray', 'black'),
-		('paused', 'dark red', 'light gray'),
-		('playing', 'dark green', 'light gray'),
-		('bg', 'dark blue', 'dark gray'),]
+			('banner', 'light gray', 'black'),
+			('paused', 'dark red', 'light gray'),
+			('playing', 'dark green', 'light gray'),
+			('bg', 'dark blue', 'dark gray'),]
 
 	def __init__(self, delay, color):
 		self.delay = delay
@@ -39,14 +39,14 @@ class Rdio:
 		self.titleMap = urwid.AttrMap(self.title, 'banner')
 		pile.contents.append((self.titleMap, pile.options('pack')))
 		pile.contents.append((urwid.SolidFill(), pile.options()))
-		
+
 		# create status message
 		self.status = urwid.Text(u"PLAYING NOTHING ON RDIO", align='center')
 		self.statusMap = urwid.AttrMap(self.status, 'paused')
-		
+
 		# create and add song / atrist to the screen
 		self.details = urwid.Text(u"Why not find some punk?", align='center')
-		
+
 		pile.contents.append((self.details, pile.options('pack')))
 		pile.contents.append((urwid.SolidFill(), pile.options()))
 
@@ -92,7 +92,7 @@ class Rdio:
 
 	def nowPlaying(self, loop, user_data = None):
 		status = str(self.getRdio('status'))
-		
+
 		if "play" in status:
 			self.song = self.getRdio('song')
 			self.artist = self.getRdio('artist')
@@ -111,7 +111,7 @@ class Rdio:
 		else:
 			self.status.set_text(u"PLAYING NOTHING ON RDIO")
 			self.statusMap.set_attr_map({None: 'paused'})
-		
+
 		self.loop.set_alarm_in(self.delay, self.nowPlaying)
 
 
@@ -120,38 +120,32 @@ class Main:
 	# Setup some default varialbes
 	delay = 5
 	color = 2
+	version = "1.1.0"
 
 	def __init__(self, argv):
-		# Check for command line arguments
-		try:
-			opts, args = getopt.getopt(argv,"hdc:",["help", "delay=", 'color='])
-		except getopt.GetoptError:
-			print 'RDIO COMMANDER 0.1'
-			print 'Rdio.py -d <delay>'
-			print 'Rdio.py -c <light | dark>'
-			sys.exit(2)
+		print 'RDIO COMMANDER ' + self.version
+		print 'https://github.com/obihann/RdioCommander/'
+		print 'This tool is protected by the GNU General Public License v2.'
+		print 'Copyright Jeffrey Hann 2014'
+		print '------------------------------------------------------------'
+		parser = argparse.ArgumentParser()
+		parser.add_argument("-r", "--refresh", type=float, help="Adjust the number of seconds the app refreshes the screen")
+		parser.add_argument("-c", "--color", type=str, help="Specify a light or dark color scheme")
 
-		for opt, arg in opts:
-			if opt == '-h':
-				print 'RDIO COMMANDER 0.1'
-				print 'Rdio.py -d <delay>'
-				print 'Rdio.py -c <light | dark>'
-				sys.exit()
-			elif opt == '-c':
-				if (str(arg) == 'light'):
-					self.color = 1
-				else:
-					self.color = 2
-			elif opt == "-d":
-				try:
-					self.delay = float(arg)
-				except ValueError:
-					self.delay = 5
+		args = parser.parse_args()
+		if args.refresh:
+			self.delay = args.refresh
+		if args.color:
+			if str.color == "light":
+				self.color = 1
+			else:
+				self.color - 2
 
 		try:
 			self.rdio = Rdio(self.delay, self.color)
 		except KeyboardInterrupt:
 			sys.exit()
+
 
 if __name__ == "__main__":
 	main = Main(sys.argv[1:])

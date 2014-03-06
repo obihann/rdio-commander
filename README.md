@@ -1,9 +1,9 @@
-#RdioCommander 1.0
+#RdioCommander 1.1.0
 
 A tool for monitoring the Rdio desktop application. Built in Python, and using OSASCRIPT to handle interaction with Rdio.
 
-- https://github.com/obihann/RdioCommander/archive/1.0.tar.gz
-- SHA1: e19862df6eb021996e82b39362ee2a4d2c806d38
+- https://github.com/obihann/RdioCommander/archive/1.1.0.tar.gz
+- SHA1: 16a4deb87dd4b5ed7d26a81b3de5ea618f6b81de
 
 ##Setup
 ``` 
@@ -28,6 +28,7 @@ Rdio.py -c <light | dark>
 - 1.0: Initial release
 - 1.0.1: Bug fixes
 - 1.0.2: Fixing loop
+- 1.1.0: Rewriting code that handles arguments to use argeparse
 
 
 ##License
