@@ -13,16 +13,34 @@ $ python setup.py install
 ##Usage
 ```
 $ rdio -h
-RDIO COMMANDER 0.1
-Rdio.py -d <delay>
-Rdio.py -c <light | dark>
+RDIO COMMANDER 1.1.0
+https://github.com/obihann/RdioCommander/
+This tool is protected by the GNU General Public License v2.
+Copyright Jeffrey Hann 2014
+------------------------------------------------------------
+usage: rdio [-h] [-r REFRESH] [-c COLOR]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r REFRESH, --refresh REFRESH
+                        Adjust the number of seconds the app refreshes the
+                        screen
+  -c COLOR, --color COLOR
+                        Specify a light or dark color scheme
 ```
 
 ##Examples
-###Light
-![alt tag](https://raw.github.com/obihann/RdioCommander/master/screenshots/light.png)
 ###Dark
+```
+$ rdio
+```
 ![alt tag](https://raw.github.com/obihann/RdioCommander/master/screenshots/dark.png)
+###Light
+```
+$ rdio -c light
+```
+![alt tag](https://raw.github.com/obihann/RdioCommander/master/screenshots/light.png)
+
 
 ##Changelog
 - 1.0: Initial release
