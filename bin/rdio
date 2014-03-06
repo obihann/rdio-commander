@@ -20,6 +20,7 @@ class Rdio:
 		('bg', 'dark blue', 'dark gray'),]
 
 	def __init__(self, delay, color):
+		self.delay = delay
 		if color == 1:
 			self.palette = self.lightPallet
 		else:
@@ -51,8 +52,6 @@ class Rdio:
 
 		# add status message
 		pile.contents.append((self.statusMap, pile.options('pack')))
-
-		self.loop.set_alarm_in(delay, self.nowPlaying)
 
 		self.nowPlaying(self.loop)
 		self.loop.run()
@@ -118,12 +117,14 @@ class Rdio:
 		else:
 			self.status.set_text(u"PLAYING NOTHING ON RDIO")
 			self.statusMap.set_attr_map({None: 'paused'})
+		
+		self.loop.set_alarm_in(self.delay, self.nowPlaying)
 
 
 # The main class to handle threads, and inputs
 class Main:
 	# Setup some default varialbes
-	delay = 15.0
+	delay = 5
 	color = 2
 
 	def __init__(self, argv):
@@ -131,7 +132,9 @@ class Main:
 		try:
 			opts, args = getopt.getopt(argv,"hdc:",["help", "delay=", 'color='])
 		except getopt.GetoptError:
-			print 'rdio.py -d <delay>'
+			print 'RDIO COMMANDER 0.1'
+			print 'Rdio.py -d <delay>'
+			print 'Rdio.py -c <light | dark>'
 			sys.exit(2)
 
 		for opt, arg in opts:
@@ -140,16 +143,16 @@ class Main:
 				print 'Rdio.py -d <delay>'
 				print 'Rdio.py -c <light | dark>'
 				sys.exit()
-			if opt == '-c':
+			elif opt == '-c':
 				if (str(arg) == 'light'):
 					self.color = 1
 				else:
 					self.color = 2
-			elif opt in ("-d", "--delay"):
+			elif opt == "-d":
 				try:
 					self.delay = float(arg)
 				except ValueError:
-					self.delay = 15
+					self.delay = 5
 
 		try:
 			self.rdio = Rdio(self.delay, self.color)

@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
 	name='RdioCommander',
-	version='1.0.0',
+	version='1.0.1',
 	author='Jeffrey Hann',
 	author_email='jeffhann@gmail.com',
 	scripts=['bin/rdio'],
