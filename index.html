@@ -1,61 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>RdioCommander 1.1.0 by obihann</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
-    <title>Rdiocommander by obihann</title>
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/obihann/RdioCommander">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/obihann/RdioCommander/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/obihann/RdioCommander/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <header>
-      <div class="container">
-        <h1>Rdiocommander</h1>
-        <h2>A Python and AppleScript tool for controlling the Rdio application.</h2>
+    <div class="wrapper">
 
-        <section id="downloads">
-          <a href="https://github.com/obihann/RdioCommander/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/obihann/RdioCommander/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/obihann/RdioCommander" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+      <section>
+        <div id="title">
+          <h1>RdioCommander 1.1.0</h1>
+          <p>A tool for monitoring the Rdio desktop application. Built in Python, and using OSASCRIPT to handle interaction with Rdio.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/obihann">obihann</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
 
-    <div class="container">
-      <section id="main_content">
-        <pre><code>NOW PLAYING ON RDIO
---------------------
- Authority Zero
- One More Minute
+        <ul>
+<li><a href="https://github.com/obihann/RdioCommander/archive/1.1.0.tar.gz">https://github.com/obihann/RdioCommander/archive/1.1.0.tar.gz</a></li>
+<li>SHA1: 877b6d67f4e19d218e0cf0de04d7f821becd7bc4</li>
+</ul><h2>
+<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h2>
+
+<pre><code>$ python setup.py install
 </code></pre>
 
 <h2>
-<a name="instructions" class="anchor" href="#instructions"><span class="octicon octicon-link"></span></a>Instructions</h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-<blockquote>
-<p>python bin/rdio</p>
-</blockquote>
-
-<p>By default this refreshes every 10 seconds, to customize that try the following</p>
-
-<blockquote>
-<p>python bin/rdio -d 5</p>
-</blockquote>
+<pre><code>$ rdio -h
+RDIO COMMANDER 0.1
+Rdio.py -d &lt;delay&gt;
+Rdio.py -c &lt;light | dark&gt;
+</code></pre>
 
 <h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h3>
+<a name="light" class="anchor" href="#light"><span class="octicon octicon-link"></span></a>Light</h3>
+
+<p><img src="https://raw.github.com/obihann/RdioCommander/master/screenshots/light.png" alt="alt tag"></p>
+
+<h3>
+<a name="dark" class="anchor" href="#dark"><span class="octicon octicon-link"></span></a>Dark</h3>
+
+<p><img src="https://raw.github.com/obihann/RdioCommander/master/screenshots/dark.png" alt="alt tag"></p>
+
+<h2>
+<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h2>
+
+<ul>
+<li>1.0: Initial release</li>
+<li>1.0.1: Bug fixes</li>
+<li>1.0.2: Fixing loop</li>
+<li>1.1.0: Rewriting code that handles arguments to use argeparse</li>
+</ul><h2>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>This tool is protected by the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License v2</a>.</p>
 
 <p>Copyright <a href="http://jeffreyhann.ca/">Jeffrey Hann</a> 2014</p>
       </section>
-    </div>
 
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
