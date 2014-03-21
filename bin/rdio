@@ -159,15 +159,18 @@ class Rdio:
 			self.song = self.controlRdio('song').rstrip()
 			self.artist = self.controlRdio('artist').rstrip()
 
-			duration = float(self.controlRdio('duration'))
-			position = float(self.controlRdio('position'))
+                        try:
+                            duration = float(self.controlRdio('duration'))
+                            position = float(self.controlRdio('position'))
 
-			position = int(duration * position) / 100
+                            position = int(duration * position) / 100
 
-			duration = str(datetime.timedelta(seconds = duration))
-			position = str(datetime.timedelta(seconds = position))
+                            duration = str(datetime.timedelta(seconds = duration))
+                            position = str(datetime.timedelta(seconds = position))
 
-			self.duration = position[3:] + " / " + duration[3:]
+                            self.duration = position[3:] + " / " + duration[3:]
+                        except ValueError:
+                            self.duration = "" 
 
 			self.status.set_text(u"NOW PLAYING ON RDIO")
 			self.statusMap.set_attr_map({None: 'playing'})
