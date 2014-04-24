@@ -1,10 +1,11 @@
-RdioCommander 1.2.0
+RdioCommander 1.2.1
 ===================
+[![Build Status](https://travis-ci.org/obihann/RdioCommander.svg?branch=master)](https://travis-ci.org/obihann/RdioCommander)
 
 A tool for monitoring the Rdio desktop application. Built in Python, and
 using OSASCRIPT to handle interaction with Rdio.
 
--  https://github.com/obihann/RdioCommander/archive/1.2.0.tar.gz
+-  https://github.com/obihann/RdioCommander/archive/1.2.1.tar.gz
 
 Setup
 -----
@@ -19,7 +20,7 @@ Usage
 ::
 
     $ rdio -h
-    RDIO COMMANDER 1.2.0
+    RDIO COMMANDER 1.2.1
     https://github.com/obihann/RdioCommander/
     This tool is protected by the GNU General Public License v2.
     Copyright Jeffrey Hann 2014
@@ -62,6 +63,7 @@ Changelog
 -  1.0.2: Fixing loop
 -  1.1.0: Rewriting code that handles arguments to use argeparse
 -  1.2.0: Bug fixes, adding duration, adding basic conrols
+-  1.2.1: Fixing floating point error, ingetrating travis-ci testing
 
 License
 -------
