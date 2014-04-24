@@ -195,7 +195,7 @@ class Main:
 	# Setup some default varialbes
 	delay = 1
 	color = 2
-	version = "1.2.0"
+	version = "1.2.1"
 
 	def __init__(self, argv):
 		print 'RDIO COMMANDER ' + self.version

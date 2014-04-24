@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
         name='RdioCommander',
-        version='1.2.0',
+        version='1.2.1',
         author='Jeffrey Hann',
         author_email='jeffhann@gmail.com',
         scripts=['bin/rdio'],
