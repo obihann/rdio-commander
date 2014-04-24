@@ -1,6 +1,7 @@
 RdioCommander 1.2.1
 ===================
-.. image:: https://travis-ci.org/obihann/RdioCommander.svg?branch=master   :target: https://travis-ci.org/obihann/RdioCommander
+.. image:: https://travis-ci.org/obihann/RdioCommander.svg?branch=master   
+   :target: https://travis-ci.org/obihann/RdioCommander
 
 A tool for monitoring the Rdio desktop application. Built in Python, and
 using OSASCRIPT to handle interaction with Rdio.
